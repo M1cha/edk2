@@ -1,0 +1,93 @@
+#
+#  Copyright (c) 2006 - 2016, Intel Corporation. All rights reserved.<BR>
+#  Portions copyright (c) 2008 - 2009, Apple Inc. All rights reserved.<BR>
+#  Portions copyright (c) 2011 - 2014, ARM Ltd. All rights reserved.<BR>
+#  Copyright (c) 2015, Hewlett-Packard Development Company, L.P.<BR>
+#  (C) Copyright 2016 Hewlett Packard Enterprise Development LP<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution.  The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+
+####################################################################################
+#
+# CLANG35   - This configuration is used to compile under Linux to produce
+#             PE/COFF binaries using the clang compiler and assembler (v3.5 and up)
+#             and GNU linker
+#
+####################################################################################
+*_CLANG35_*_*_FAMILY             = GCC
+
+*_CLANG35_*_MAKE_PATH            = make
+*_CLANG35_*_*_DLL                = ENV(CLANG35_DLL)
+*_CLANG35_*_ASL_PATH             = DEF(UNIX_IASL_BIN)
+
+*_CLANG35_*_PP_FLAGS             = DEF(GCC_PP_FLAGS)
+*_CLANG35_*_ASLCC_FLAGS          = DEF(GCC_ASLCC_FLAGS)
+*_CLANG35_*_APP_FLAGS            =
+*_CLANG35_*_ASL_FLAGS            = DEF(IASL_FLAGS)
+*_CLANG35_*_ASL_OUTFLAGS         = DEF(IASL_OUTFLAGS)
+
+*_CLANG35_*_CC_PATH              = ENV(CLANG35_BIN)clang
+*_CLANG35_*_ASM_PATH             = ENV(CLANG35_BIN)clang
+*_CLANG35_*_PP_PATH              = ENV(CLANG35_BIN)clang
+*_CLANG35_*_VFRPP_PATH           = ENV(CLANG35_BIN)clang
+*_CLANG35_*_ASLCC_PATH           = ENV(CLANG35_BIN)clang
+*_CLANG35_*_ASLPP_PATH           = ENV(CLANG35_BIN)clang
+
+DEFINE CLANG35_ARM_TARGET        = -target armv7-none-linux-gnueabi
+DEFINE CLANG35_AARCH64_TARGET    = -target aarch64-none-linux-gnu
+
+DEFINE CLANG35_WARNING_OVERRIDES = -Wno-parentheses-equality -Wno-tautological-compare -Wno-tautological-constant-out-of-range-compare -Wno-empty-body
+DEFINE CLANG35_ARM_CC_FLAGS      = DEF(GCC_ARM_CC_FLAGS) DEF(CLANG35_ARM_TARGET) -mstrict-align -mllvm -arm-use-movt=0 DEF(CLANG35_WARNING_OVERRIDES)
+DEFINE CLANG35_AARCH64_CC_FLAGS  = DEF(GCC_AARCH64_CC_FLAGS) DEF(CLANG35_AARCH64_TARGET) -mcmodel=small DEF(CLANG35_WARNING_OVERRIDES)
+
+##################
+# CLANG35 ARM definitions
+##################
+*_CLANG35_ARM_SLINK_PATH         = ENV(CLANG35_ARM_PREFIX)ar
+*_CLANG35_ARM_DLINK_PATH         = ENV(CLANG35_ARM_PREFIX)ld
+*_CLANG35_ARM_ASLDLINK_PATH      = ENV(CLANG35_ARM_PREFIX)ld
+*_CLANG35_ARM_RC_PATH            = ENV(CLANG35_ARM_PREFIX)objcopy
+
+*_CLANG35_ARM_ASLCC_FLAGS        = DEF(GCC_ASLCC_FLAGS)
+*_CLANG35_ARM_ASLDLINK_FLAGS     = DEF(GCC_ARM_ASLDLINK_FLAGS)
+*_CLANG35_ARM_ASM_FLAGS          = DEF(GCC_ASM_FLAGS) DEF(CLANG35_ARM_TARGET) $(ARCHASM_FLAGS) $(PLATFORM_FLAGS) -Qunused-arguments
+*_CLANG35_ARM_DLINK_FLAGS        = DEF(GCC_ARM_DLINK_FLAGS)
+*_CLANG35_ARM_DLINK2_FLAGS       = DEF(GCC_DLINK2_FLAGS_COMMON) --defsym=PECOFF_HEADER_SIZE=0x220
+*_CLANG35_ARM_PLATFORM_FLAGS     =
+*_CLANG35_ARM_PP_FLAGS           = DEF(GCC_PP_FLAGS) DEF(CLANG35_ARM_TARGET) $(ARCHCC_FLAGS) $(PLATFORM_FLAGS)
+*_CLANG35_ARM_RC_FLAGS           = DEF(GCC_ARM_RC_FLAGS)
+*_CLANG35_ARM_VFRPP_FLAGS        = DEF(GCC_VFRPP_FLAGS) DEF(CLANG35_ARM_TARGET) $(ARCHCC_FLAGS) $(PLATFORM_FLAGS)
+*_CLANG35_ARM_ASLPP_FLAGS        = DEF(GCC_ASLPP_FLAGS) DEF(CLANG35_ARM_TARGET)
+
+  DEBUG_CLANG35_ARM_CC_FLAGS     = DEF(CLANG35_ARM_CC_FLAGS) $(ARCHCC_FLAGS) $(PLATFORM_FLAGS) -O0
+RELEASE_CLANG35_ARM_CC_FLAGS     = DEF(CLANG35_ARM_CC_FLAGS) $(ARCHCC_FLAGS) $(PLATFORM_FLAGS) -Oz
+
+##################
+# CLANG35 AARCH64 definitions
+##################
+*_CLANG35_AARCH64_SLINK_PATH     = ENV(CLANG35_AARCH64_PREFIX)ar
+*_CLANG35_AARCH64_DLINK_PATH     = ENV(CLANG35_AARCH64_PREFIX)ld
+*_CLANG35_AARCH64_ASLDLINK_PATH  = ENV(CLANG35_AARCH64_PREFIX)ld
+*_CLANG35_AARCH64_RC_PATH        = ENV(CLANG35_AARCH64_PREFIX)objcopy
+
+*_CLANG35_AARCH64_ASLCC_FLAGS    = DEF(GCC_ASLCC_FLAGS)
+*_CLANG35_AARCH64_ASLDLINK_FLAGS = DEF(GCC_AARCH64_ASLDLINK_FLAGS)
+*_CLANG35_AARCH64_ASM_FLAGS      = DEF(GCC_ASM_FLAGS) DEF(CLANG35_AARCH64_TARGET) $(ARCHASM_FLAGS) $(PLATFORM_FLAGS) -Qunused-arguments
+*_CLANG35_AARCH64_DLINK_FLAGS    = DEF(GCC_AARCH64_DLINK_FLAGS) -z common-page-size=0x1000
+*_CLANG35_AARCH64_DLINK2_FLAGS   = DEF(GCC_DLINK2_FLAGS_COMMON) --defsym=PECOFF_HEADER_SIZE=0x228
+*_CLANG35_AARCH64_PLATFORM_FLAGS =
+*_CLANG35_AARCH64_PP_FLAGS       = DEF(GCC_PP_FLAGS) DEF(CLANG35_AARCH64_TARGET) $(ARCHCC_FLAGS) $(PLATFORM_FLAGS)
+*_CLANG35_AARCH64_RC_FLAGS       = DEF(GCC_AARCH64_RC_FLAGS)
+*_CLANG35_AARCH64_VFRPP_FLAGS    = DEF(GCC_VFRPP_FLAGS) DEF(CLANG35_AARCH64_TARGET) $(ARCHCC_FLAGS) $(PLATFORM_FLAGS)
+*_CLANG35_AARCH64_ASLPP_FLAGS    = DEF(GCC_ASLPP_FLAGS) DEF(CLANG35_AARCH64_TARGET)
+
+  DEBUG_CLANG35_AARCH64_CC_FLAGS = DEF(CLANG35_AARCH64_CC_FLAGS) $(ARCHCC_FLAGS) $(PLATFORM_FLAGS) -O0
+RELEASE_CLANG35_AARCH64_CC_FLAGS = DEF(CLANG35_AARCH64_CC_FLAGS) $(ARCHCC_FLAGS) $(PLATFORM_FLAGS) -Oz
+
