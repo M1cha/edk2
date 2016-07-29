@@ -469,26 +469,26 @@ time1(
     seen[sp->types[i]] = TRUE;
     types[nseen++] = sp->types[i];
     }
-    for (sameind = 0; sameind < nseen; ++sameind) {
-      samei = types[sameind];
-      if (sp->ttis[samei].tt_isdst != tmp->tm_isdst)
+  for (sameind = 0; sameind < nseen; ++sameind) {
+    samei = types[sameind];
+    if (sp->ttis[samei].tt_isdst != tmp->tm_isdst)
+      continue;
+    for (otherind = 0; otherind < nseen; ++otherind) {
+      otheri = types[otherind];
+      if (sp->ttis[otheri].tt_isdst == tmp->tm_isdst)
         continue;
-      for (otherind = 0; otherind < nseen; ++otherind) {
-        otheri = types[otherind];
-        if (sp->ttis[otheri].tt_isdst == tmp->tm_isdst)
-          continue;
-        tmp->tm_sec += (int)(sp->ttis[otheri].tt_gmtoff -
-                             sp->ttis[samei].tt_gmtoff);
-        tmp->tm_isdst = !tmp->tm_isdst;
-        t = time2(tmp, funcp, offset, &okay);
-        if (okay)
-          return t;
-        tmp->tm_sec -= (int)(sp->ttis[otheri].tt_gmtoff -
-                             sp->ttis[samei].tt_gmtoff);
-        tmp->tm_isdst = !tmp->tm_isdst;
-      }
+      tmp->tm_sec += (int)(sp->ttis[otheri].tt_gmtoff -
+                           sp->ttis[samei].tt_gmtoff);
+      tmp->tm_isdst = !tmp->tm_isdst;
+      t = time2(tmp, funcp, offset, &okay);
+      if (okay)
+        return t;
+      tmp->tm_sec -= (int)(sp->ttis[otheri].tt_gmtoff -
+                           sp->ttis[samei].tt_gmtoff);
+      tmp->tm_isdst = !tmp->tm_isdst;
     }
-    return WRONG;
+  }
+  return WRONG;
 }
 
 /** The mktime function converts the broken-down time, expressed as local time,
