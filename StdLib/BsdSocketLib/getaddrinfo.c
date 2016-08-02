@@ -581,6 +581,9 @@ explore_fqdn(const struct addrinfo *pai, const char *hostname,
 
 	result = NULL;
 
+	(void)(dtab);
+	(void)(default_dns_files);
+
 	/*
 	 * if the servname does not match socktype/protocol, ignore it.
 	 */
@@ -1062,8 +1065,10 @@ ip6_str2scopeid(char *scope, struct sockaddr_in6 *sin6, u_int32_t *scopeid)
 
 /* code duplicate with gethnamaddr.c */
 
+#ifdef _ORG_FREEBSD_
 static const char AskedForGot[] =
 	"gethostby*.getanswer: asked for \"%s\", got \"%s\"";
+#endif
 
 static struct addrinfo *
 getanswer(const querybuf *answer, int anslen, const char *qname, int qtype,
